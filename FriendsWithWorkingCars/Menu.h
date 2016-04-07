@@ -148,7 +148,7 @@ string dayPrompt() {
 	return day;
 }
 
-
+//TODO: Refactor prompting user for refinement
 void roadTrip(Database *friends) {
 	string city = cityPrompt(0, friends);
 	string timeOfYear = timeOfYearPrompt(0);
@@ -390,6 +390,7 @@ void roadTrip(Database *friends) {
 	}
 
 }
+//TODO: Refactor prompting user for refinement
 void breakTrip(Database *friends) {
 	string fromCity = cityPrompt(0, friends); //where are we now
 	string toCity = cityPrompt(1, friends); //where are we going
@@ -637,6 +638,7 @@ void breakTrip(Database *friends) {
 
 
 }
+//TODO: Refactor prompting user for refinement
 void localTrip(Database *friends) {
 	string city = cityPrompt(0, friends);
 	string timeOfYear = timeOfYearPrompt(0); //what part of year is it
@@ -894,13 +896,13 @@ void manageFriend() {
 	display(boolPrompt.str(), false);
 	cin >> gasMoneyTrip;
 
-	//car
-	//avaliability
+	//TODO: add car
+	//TODO: avaliability
 
 
 
-	//modify friend
-	//delete friend
-	//add/delete/modify cars to people
-	//add/delete/modify avaliability
+	//TODO: modify friend
+	//TODO: delete friend
+	//TODO: add/delete/modify cars to people
+	//TODO: add/delete/modify avaliability
 }

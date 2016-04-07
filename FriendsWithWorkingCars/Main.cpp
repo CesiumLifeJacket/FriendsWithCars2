@@ -24,7 +24,7 @@ int main()
 
 
 	int menuOpt = menu();
-
+	//TODO: move the prompt and switch statement together
 	switch (menuOpt)
 	{
 	case 1:

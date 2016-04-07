@@ -101,7 +101,7 @@ Query::Query(	//these first three lines of booleans are for what is shown
 
 	)
 {
-	//there is probably a better way to do this. Will ask about it later. 
+	//TODO: there is probably a better way to do this. Will ask about it later. 
 	//Initialize the class variables to set up the query parameters. 
 	this->gasMoneyLocal = gasMoneyLocal;
 	this->gasMoneyTrip = gasMoneyTrip;

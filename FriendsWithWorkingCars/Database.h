@@ -270,6 +270,7 @@ void Database::insert() {
 
 
 string insertPerson(string name, bool AAA, string contact, string contact2, bool gasLocal, bool gasTrip) {
+	//TODO: make it work
 	//Tried: brackets around field names, using YES for true, using 1 for true, using -1 for true (because according to the internet, these are all the 'only' way that access stores yes/no as true.)
 	//the query works in access, but not in the connection
 	stringstream ss;

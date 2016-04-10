@@ -24,128 +24,103 @@ bool boolIn() {
 
 }
 
+bool is_number(string s) {
+	for (int i = 0; i < s.length(); i++)
+		if (!isdigit(s[i]))
+			return false;
+
+	return true;
+}
+
+template<typename T>
+T menuPrompt(string prompt, vector<string> options, vector<T> outputs) {
+	if (options.size() != outputs.size()) {
+		// TODO: make this a real exception
+		throw "Range mismatch AHHHH";
+	}
+
+	int input;
+	while (true) {
+		string input_str;
+		cout << prompt << endl;
+		for (int i = 0; i < options.size(); i++) {
+			cout << i + 1 << ") " << options[i] << endl;
+		}
+		cin >> input_str;
+
+		if (is_number(input_str)) {
+			input = stoi(input_str);
+			if (input < 1 || input > options.size()) {
+				cout << "input is out of range" << endl;
+				continue;
+			}
+			break;
+		}
+		else {
+			cout << "please enter an integer between 1 and " << options.size() << endl;
+		}
+	}
+	return outputs[input - 1];
+}
+
+bool boolPrompt(string prompt) {
+	vector<string> options = { "Yes", "No" };
+	vector<bool> outputs = { true, false };
+	return menuPrompt(prompt, options, outputs);
+}
+
+int intPrompt(string prompt, int min, int max) {
+	while (true) {
+		string in_str;
+		cout << prompt << ' ';
+		cin >> in_str;
+		if (is_number(in_str)) {
+			int in = stoi(in_str);
+			if (in < min || in > max) {
+				cout << "Please input an integer between " << min << " and " << max << endl;
+			}
+			else {
+				return in;
+			}
+		}
+	}
+}
+
 int menu() {
-	// cout and cin --> display abstraction
-	int ans;
-	do {
-		display("What would you like to do?", true);
-		display("1) Plan road trip", true);
-		display("2) Plan break trip", true);
-		display("3) Plan local trip", true);
-		//<< "4) Manage friends" << endl; //
-		cin >> ans;
-	} while (ans > 3 || ans < 1);
-	return ans;
+	vector<string> options = {
+		"Plan road trip",
+		"Plan break trip",
+		"Plan local trip",
+		"insert something??"
+	};
+	vector<int> outputs = { 1, 2, 3, 4};
+	string prompt = "What would you like to do?";
+	return menuPrompt(prompt, options, outputs);
 }
 
 string cityPrompt(int calltype, Database * friends) {
-	vector<string> cities = friends->getCities();
-	int ans;
-	stringstream temp;
-	if (calltype == 0)
-	{
-		display( "what city are you in?" , true);
-	}
-	else
-		display("What city are you going to?", true);
-	
-	//list of entered friends.cities
-	
-	for (int i = 0; i < cities.size(); i++)
-	{
-		temp.str("");
-		temp << i+1 << ") " << cities[i] << endl;
-		display(temp.str(), false);
-	}
-	cin.ignore();
-	cin.clear();
-	cin >> ans;
-
-	return cities[ans-1];
+	vector<string> options = friends->getCities();
+	vector<string> outputs = options;
+	string prompt = calltype == 0 ?
+		"What city are you in?" :
+		"What city are you going to?";
+	return menuPrompt(prompt, options, outputs);
 }
 
 string timeOfYearPrompt(int calltype) {
-	int time;
-	string timeOfYr;
-	if (calltype == 0) { //time of year we are in now
-						 //display
-		display("What time of year is it?", true);
-	}
-	else {
-		display("What time of year will it be?", true);
-	}
-	do { //can change this to allow string entry, check string in while
-		display("1) School", true);
-		display("2) Summer", true);
-		display( "3) Break", true);
-		cin >> time;
-	} while (time <1 || time > 3);
-	switch (time)
-	{
-	case 1:
-		timeOfYr = "SCHOOL";
-		break;
-	case 2:
-		timeOfYr = "SUMMER";
-		break;
-	case 3:
-		timeOfYr = "BREAK";
-		break;
-	default:
-		break;
-	}
-	return timeOfYr;
+	vector<string> options = { "School", "Summer", "Break" };
+	vector<string> outputs = { "SCHOOL", "SUMMER", "BREAK" };
+	string prompt = calltype == 0 ?
+		"What time of year is it?" :
+		"What time of year will it be?";
+	return menuPrompt(prompt, options, outputs);
 }
 
 string dayPrompt() {
-	int ans;
-	string day;
-	stringstream temp;
-	display("What day would you like to look at?", true);
-	do {
-		temp << "1) Sunday" << endl
-			<< "2) Monday" << endl
-			<< "3) Tuesday" << endl
-			<< "4) Wednesday" << endl
-			<< "5) Thursday" << endl
-			<< "6) Friday" << endl
-			<< "7) Saturday" << endl
-			<< "8) General availability" << endl;
-		display(temp.str(), false);
-		cin >> ans;
-	} while (ans < 1 || ans >8);
-
-	switch (ans)
-	{
-	case 1:
-		day = "SUN";
-		break;
-	case 2:
-		day = "MON";
-		break;
-	case 3:
-		day = "TUES";
-		break;
-	case 4:
-		day = "WED";
-		break;
-	case 5:
-		day = "THU";
-		break;
-	case 6:
-		day = "FRI";
-		break;
-	case 7:
-		day = "SAT";
-		break;
-	case 8:
-		day = "GEN";
-		break;
-	default:
-		break;
-	}
-
-	return day;
+	vector<string> options = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "General Availability" };
+	vector<string> outputs = { "SUN", "MON", "TUES", "WED", "THU", "FRI", "SAT", "GEN" };
+	string prompt = "What day would you like to look at?";
+	return menuPrompt(prompt, outputs, options);
 }
 
 //TODO: Refactor prompting user for refinement
@@ -175,21 +150,15 @@ void roadTrip(Database *friends) {
 	bool showGasMoneyTrip = true;
 	bool showCanSnow = true;
 
-	int show;
 	stringstream ss;
 	stringstream ssTemp;
 	bool expandArea = false;
 
 
-	int refine;
-	ssTemp << "would you like to refine the search?" << endl
-		<< "1) Yes" << endl
-		<< "2) No" << endl;
-	display(ssTemp.str(), false);
-	refine = boolIn();
+	bool refine = boolPrompt("would you like to refine the search?");
 
 	//min miles limit
-	if (refine == 1)
+	if (refine)
 	{
 		display("How many miles will you be traveling?", false);
 		int intmiles;
@@ -200,174 +169,94 @@ void roadTrip(Database *friends) {
 		ss.str(""); //clear stringstream
 	}
 
-	display("Would you like to display miles limits?", true);
-	ssTemp.str("");
-	ssTemp << "1) Yes" << endl << "2) No" << endl;
-	display(ssTemp.str(), false);
-	showMilesLimit = boolIn();
+	showMilesLimit = boolPrompt("Would you like to display miles limits?");
 
 	//only show drivers that will not ask for gas money for a trip
-	if (refine == 1) {
-		int gasDrivers;
-		display( "Would you like to only show drivers that will not ask for gas money on a trip?", true);
-		do {
-			display(ssTemp.str(), false); //is still the same prompt as above
-			cin >> gasDrivers;
-		} while (gasDrivers < 1 || gasDrivers > 2);
-		if (gasDrivers == 1) {
-			gasMoneyTrip = true;
+	if (refine) {
+		gasMoneyTrip = boolPrompt("Would you like to only show drivers that will not ask for gas money on a trip?");
+		if (gasMoneyTrip) {
 			showGasMoneyTrip = false; //assuming user does not want column of 'yes'
 		}
 	}
 	if (showGasMoneyTrip) { //if we haven't already changed showGasMoneyTrip
-		display("Would you like to display whether drivers may ask for gas money?", true);
-		display(ssTemp.str(), false); //still the same boolean prompt
-		showGasMoneyTrip = boolIn();
+		showGasMoneyTrip = boolPrompt("Would you like to display whether drivers may ask for gas money?");
 	}
 
 	//min gas economy
-	if (refine == 1) {
-		int gasEcon;
-		display( "Enter a minimum gas economy (Enter 0 if you don't care)", true);
-		cin >> gasEcon;
-
-		ss << gasEcon;
-		gasEconomy = ss.str();
-		ss.str("");
+	if (refine) {
+		string prompt = "Enter a minimum gas economy (Enter 0 if you don't care)";
+		gasEconomy = to_string(intPrompt(prompt, 0, INT_MAX));
 	}
-	display( "Would you like to display Gas Economy?", true);
-	display(ssTemp.str(), false); //still the same boolean prompt
-	showGasEcon = boolIn();
+	showGasEcon = boolPrompt("Would you like to display Gas Economy?");
 
 	//min reliability
-	if (refine == 1) {
-		int intreliability;
-		display( "Enter a min reliability (Enter 0 if you don't care", true);
-		cin >> intreliability;
-
-		ss << intreliability;
-		reliability = ss.str();
-		ss.str("");
+	if (refine) {
+		string prompt = "Enter a min reliability (Enter 0 if you don't care)";
+		reliability = to_string(intPrompt(prompt, 0, MAX_RELIABILITY));
 	}
 
-	display( "Would you like to display Reliability?", true);
-	display(ssTemp.str(), false); //still the same boolean prompt
-
-	showReliability = boolIn();
+	showReliability = boolPrompt("Would you like to display Reliability?");
 
 	//min seatbelts
-	if (refine == 1) {
-		int seat;
-		display( "Enter a minimum number of seatbelts (Including the driver)", true );
-		cin >> seat;
-
-		ss << seat;
-		seatbelts = ss.str();
-		ss.str("");
+	if (refine) {
+		string prompt = "Enter a minimum number of seatbelts (Including the driver)";
+		seatbelts = to_string(intPrompt(prompt, 0, INT_MAX));
 	}
 
-	display( "Would you like to display number of seatbelts?", true);
-	display(ssTemp.str(), false); //still the same boolean prompt
-	showSeatbelts = boolIn();
+	showSeatbelts = boolPrompt("Would you like to display number of seatbelts?");
 
 	//only show can sofa
-	int intSofa;
-	if (refine == 1) {
-		display( "Would you like to only show drivers who can move a sofa?", true);
-		display(ssTemp.str(), false); //still the same boolean prompt
-		cin >> intSofa;
-		careSofa = boolIn();
+
+	if (refine) {
+		careSofa = boolPrompt("Would you like to only show drivers who can move a sofa?");
 		if (careSofa)
 			showSofa = false;
-		}
-	
+	}
 
 	if (showSofa) {
-		display("Would you like to display sofa-bility?", true);
-		display(ssTemp.str(), false); //still the same boolean prompt
-		
-		showSofa = boolIn();
+		showSofa = boolPrompt("Would you like to display sofa-bility?");
 	}
 
 	//only show w/ AAA
-	if (refine == 1) {
-		int aaa;
-		display( "Would you like to only show drivers with AAA?", true);
-		display(ssTemp.str(), false); //still the same boolean prompt
-		cin >> aaa;
-
-		if (aaa == 1) {
+	if (refine) {
+		bool aaa = boolPrompt("Would you like to only show drivers with AAA?");
+		if (aaa) {
 			CareIfDriverHasAAA = true;
 			ShowdriverHasAAA = false;
 		}
 	}
 	if (ShowdriverHasAAA) {
-
-		display("Would you like to display AAA status?", true);
-		display(ssTemp.str(), false); //still the same boolean prompt
-		cin >> show;
-
-		if (show == 1)
-			ShowdriverHasAAA = true;
-		else
-			ShowdriverHasAAA = false;
+		ShowdriverHasAAA = boolPrompt("Would you like to display AAA status?");
 	}
 
 	//cansnow
-	if (refine == 1) {
-		int snow;
-		display( "Would you like to only show snow drivers?", true);
-		display(ssTemp.str(), false); //still the same boolean prompt
-		cin >> snow;
-		if (snow == 1)
+	if (refine) {
+		bool snow = boolPrompt("Would you like to only show snow drivers?");
+		if (snow)
 		{
 			careAboutSnow = true;
 			showCanSnow = false;
 		}
 	}
 	if (showCanSnow) {
-		display( "Would you like to show whether drivers can drive on snow?", true);
-		display(ssTemp.str(), false); //still the same boolean prompt
-		cin >> show;
-		if (show == 1)
-			showCanSnow = true;
-		else
-			showCanSnow = false;
+		showCanSnow = boolPrompt("Would you like to show whether drivers can drive on snow?");
 	}
 
 	//type
 	vector<string> carTypes = friends->getCarTypes();
-	if (refine == 1) {
-		int chooseType;
-		cout << "Select car types you would like to view: " << endl;
-		for (int i = 0; i < carTypes.size(); i++)
-		{
-			ss.str("");
-			ss << i + 1 << ") " << carTypes[i] << endl;
-			display(ss.str(), false); 
-		}
-		ss.str("");
-		ss << carTypes.size() + 1 << ") Any" << endl;
-		display(ss.str(), false);
-		do {
-			cin >> chooseType;
-		} while (chooseType <1 || chooseType > carTypes.size() + 1);
-		if (chooseType < carTypes.size() + 1 ) //user chose a specific car type
-		{
-			type = carTypes[chooseType - 1];
+
+	if (refine) {
+		carTypes.push_back("Any");
+		vector<string> outputs = friends->getCarTypes();
+		outputs.push_back("*");
+		string prompt = "Select car types you would like to view: ";
+		type = menuPrompt(prompt, carTypes, outputs);
+		if (type != "*")
 			showType = false;
-		}
-		else type = "*";
 	}
 
 	if (showType) {
-		display("Would you like to display car types?", true);
-		display(ssTemp.str(), false); //still the same boolean prompt
-		cin >> show;
-		if (show == 1)
-			showType = true;
-		else
-			showType = false;
+		showType = boolPrompt("Would you like to display car types?");
 	}
 
 	Query roadTrip(false, showGasMoneyTrip, ShowdriverHasAAA, showMilesLimit, false, false, false, showSofa, showCanSnow, showGasEcon, showReliability, showSeatbelts,
@@ -376,13 +265,8 @@ void roadTrip(Database *friends) {
 	roadTrip.buildQuery();
 	roadTrip.runQuery(friends);
 
-	stringstream boolPrompt;
-	int expand;
-	display( "Would you like to expand your search to the area?", true);
-	boolPrompt << "1) Yes" << endl << "2) No" << endl;
-	display(boolPrompt.str(), false);
-	cin >> expand;
-	if (expand == 1)
+	bool expand = boolPrompt("Would you like to expand your search to the area?");
+	if (expand)
 	{
 		roadTrip.expandToArea();
 		roadTrip.buildQuery();
@@ -420,203 +304,97 @@ void breakTrip(Database *friends) {
 	bool showCanSnow = true;
 
 	int show;
-	stringstream ss;
-	stringstream boolPrompt;
 	bool expandArea = false;
 
 
-	int refine;
-	display("would you like to refine the search?", true);
-	boolPrompt << "1) Yes" << endl << "2) No" << endl;
-	display(boolPrompt.str(), false);
-	cin >> refine;
+	bool refine = boolPrompt("Would you like to refine the search?");
 
 
 	//gas money
-	if (refine == 1) {
-		int gasDrivers;
-		display("Would you like to only show drivers that will not ask for gas money on a trip?", true);
-		do {
-			display(boolPrompt.str(), false);
-			cin >> gasDrivers;
-		} while (gasDrivers != 1 && gasDrivers != 2);
-		if (gasDrivers == 1) {
+	if (refine) {
+		bool gasDrivers = boolPrompt("Would you like to only show drivers that will not ask for gas money on a trip?");
+		if (gasDrivers) {
 			gasMoneyTrip = true;
 			showGasMoneyTrip = false; //assuming user does not want column of 'yes'
 		}
 	}
 	if (showGasMoneyTrip) {
-		display( "Would you like to display whether drivers may ask for gas money?", true);
-		display(boolPrompt.str(), false);
-		cin >> show;
-		if (show == 1)
-			showGasMoneyTrip = true;
-		else
-			showGasMoneyTrip = false;
+		showGasMoneyTrip = boolPrompt("Would you like to display whether drivers may ask for gas money?");
 	}
 
 	//min gas economy
-	if (refine == 1) {
-		int gasEcon;
-		display("Enter a minimum gas economy (Enter 0 if you don't care)", true);
-		cin >> gasEcon;
-
-		ss << gasEcon;
-		gasEconomy = ss.str();
-		ss.str("");
+	if (refine) {
+		string prompt = "Enter a minimum gas economy (Enter 0 if you don't care)";
+		gasEconomy = to_string(intPrompt(prompt, 0, INT_MAX));
 	}
-	display("Would you like to display Gas Economy?", true);
-	display(boolPrompt.str(), false);
-	cin >> show;
-	if (show == 1)
-		showGasEcon = true;
-	else
-		showGasEcon = false;
+	showGasEcon = boolPrompt("Would you like to display Gas Economy?");
 
 	//min reliability
-	if (refine == 1) {
-		int intreliability;
-		display( "Enter a min reliability (Enter 0 if you don't care", true);
-		cin >> intreliability;
-
-		ss << intreliability;
-		reliability = ss.str();
-		ss.str("");
+	if (refine) {
+		string prompt = "Enter a min reliability (Enter 0 if you don't care";
+		reliability = to_string(intPrompt(prompt, 0, MAX_RELIABILITY));
 	}
 
-	display("Would you like to display Reliability?", true);
-	display(boolPrompt.str(), false);
-	cin >> show;
-
-	if (show == 1)
-		showReliability = true;
-	else
-		showReliability = false;
+	showReliability = boolPrompt("Would you like to display Reliability?");
 
 	//min seatbelts
-	if (refine == 1) {
-		int seat;
-		display("Enter a minimum number of seatbelts (Including the driver)", true);
-		cin >> seat;
-
-		ss << seat;
-		seatbelts = ss.str();
-		ss.str("");
+	if (refine) {
+		string prompt = "Enter a minimum number of seatbelts (Including the driver)";
+		seatbelts = to_string(intPrompt(prompt, 0, INT_MAX));
 	}
 
-	display("Would you like to display number of seatbelts?", true);
-	display(boolPrompt.str(), false);
-	cin >> show;
-
-	if (show == 1)
-		showSeatbelts = true;
-	else
-		showSeatbelts = false;
+	showSeatbelts = boolPrompt("Would you like to display number of seatbelts?");
 
 	//only show can sofa
-	if (refine == 1) {
-		int intSofa;
-		display( "Would you like to only show drivers who can move a sofa?", true);
-		display(boolPrompt.str(), false);
-		cin >> intSofa;
-
-		if (intSofa == 1) {
+	if (refine) {
+		bool boolSofa = boolPrompt("Would you like to only show drivers who can move a sofa?");
+		if (boolSofa) {
 			careSofa = true;
 			showSofa = false;
 		}
 	}
 	if (showSofa) {
-		display("Would you like to display sofa-bility?", true);
-		display(boolPrompt.str(), false);
-		cin >> show;
-
-		if (show == 1)
-			showSofa = true;
-		else
-			showSofa = false;
+		showSofa = boolPrompt("Would you like to display sofa-bility?");
 	}
 
 	//only show w/ AAA
-	if (refine == 1) {
-		int aaa;
-		display("Would you like to only show drivers with AAA?", true);
-		display(boolPrompt.str(), false);
-		cin >> aaa;
-
-		if (aaa == 1) {
+	if (refine) {
+		bool aaa = boolPrompt("Would you like to only show drivers with AAA?");
+		if (aaa) {
 			CareIfDriverHasAAA = true;
 			ShowdriverHasAAA = false;
 		}
 	}
 	if (ShowdriverHasAAA) {
-
-		display("Would you like to display AAA status?", true);
-		display(boolPrompt.str(), false);
-		cin >> show;
-
-		if (show == 1)
-			ShowdriverHasAAA = true;
-		else
-			ShowdriverHasAAA = false;
+		ShowdriverHasAAA = boolPrompt("Would you like to display AAA status?");
 	}
 
 	//cansnow
-	if (refine == 1) {
-		int snow;
-		display( "Would you like to only show snow drivers?", true);
-		display(boolPrompt.str(), false);
-		cin >> snow;
-		if (snow == 1)
+	if (refine) {
+		bool snow = boolPrompt("Would you like to only show snow drivers?");
+		if (snow)
 		{
 			careAboutSnow = true;
 			showCanSnow = false;
 		}
 	}
 	if (showCanSnow) {
-		display("Would you like to show whether drivers can drive on snow?", true);
-		display(boolPrompt.str(), false);
-		cin >> show;
-		if (show == 1)
-			showCanSnow = true;
-		else
-			showCanSnow = false;
+		showCanSnow = boolPrompt("Would you like to show whether drivers can drive on snow?");
 	}
 
 	//type
-	vector<string> carTypes = friends->getCarTypes();
-	if (refine == 1) {
-		int chooseType;
-		display( "Select car types you would like to view: ", true);
-		for (int i = 0; i < carTypes.size(); i++)
-		{
-			ss.str(""); //laura clears the string stream before using it
-			ss << i + 1 << ") " << carTypes[i] << endl;
-			display(ss.str(), false);
-			ss.str(""); //kay clears it after
-		}
-		ss.str("");
-		ss << carTypes.size() + 1 << ") Any" << endl;
-		display(ss.str(), false);
-		ss.str("");
-		do {
-			cin >> chooseType;
-		} while (chooseType <1 || chooseType > carTypes.size() + 1);
-		if (chooseType < carTypes.size() + 1) //user chose a specific car type
-		{
-			type = carTypes[chooseType - 1];
+	if (refine) {
+		vector<string> carTypes = friends->getCarTypes(), outputs = friends->getCarTypes();
+		carTypes.push_back("Any");
+		outputs.push_back("*");
+		string prompt = "Select car types you would like to view: ";
+		type = menuPrompt(prompt, carTypes, outputs);
+		if (type != "*")
 			showType = false;
-		}
-		else type = "*";
 	}
 
 	if (showType) {
-		display( "Would you like to display car types?", true);
-		display(boolPrompt.str(), false);
-		cin >> show;
-		if (show == 1)
-			showType = true;
-		else
-			showType = false;
+		showType = boolPrompt("Would you like to display car types?");
 	}
 
 	Query breakTrip(false, showGasMoneyTrip, ShowdriverHasAAA, false, false, false, false, showSofa, showCanSnow, showGasEcon, showReliability, showSeatbelts,
@@ -625,11 +403,8 @@ void breakTrip(Database *friends) {
 	breakTrip.buildQuery();
 	breakTrip.runQuery(friends);
 
-	int expand;
-	display("Would you like to expand your search to the area?", true);
-	display(boolPrompt.str(), false);
-	cin >> expand;
-	if (expand == 1)
+	bool expand = boolPrompt("Would you like to expand your search to the area?");
+	if (expand)
 	{
 		breakTrip.expandToArea();
 		breakTrip.buildQuery();
@@ -668,184 +443,101 @@ void localTrip(Database *friends) {
 
 	int show;
 	stringstream ss;
-	stringstream boolPrompt;
-	boolPrompt << "1) Yes" << endl << "2) No" << endl;
 
 	bool expandArea = false;
 
 
-	int refine;
-	display( "would you like to refine the search?", true);
-	display(boolPrompt.str(), false);
-	cin >> refine;
+	bool refine = boolPrompt("would you like to refine the search?");
 
 	//min miles limit
-	if (refine == 1)
+	if (refine)
 	{
-		display( "How many miles will you be traveling? Enter 0 for very short trip", true);
-		int intmiles;
-		cin >> intmiles;
-
-		ss << intmiles; //using stringstream to convert to string
-		miles = ss.str();
-		ss.str(""); //clear stringstream
+		string prompt = "How many miles will you be traveling? Enter 0 for very short trip";
+		miles = to_string(intPrompt(prompt, 0, INT_MAX));
 	}
 
-	display("Would you like to display miles limits?", true);
-	display(boolPrompt.str(), false);
-	cin >> show;
-	if (show == 1)
-		showMilesLimit = true;
-	else //accept no sass
-		showMilesLimit = false;
+	showMilesLimit = boolPrompt("Would you like to display miles limits?"); //accept no sass
 
 	//only show drivers that will not ask for gas money for a local trip
-	if (refine == 1) {
-		int gasDrivers;
-		display("Would you like to only show drivers that will not ask for gas money on a local trip?", true);
-		do {
-			display(boolPrompt.str(), false);
-			cin >> gasDrivers;
-		} while (gasDrivers != 1 && gasDrivers != 2);
-		if (gasDrivers == 1) {
+	if (refine) {
+		bool gasDrivers = boolPrompt("Would you like to only show drivers that will not ask for gas money on a local trip?");
+		if (gasDrivers) {
 			gasMoneyLocal = true;
 			showGasMoneyLocal = false; //assuming user does not want column of 'yes'
 		}
 	}
 	if (showGasMoneyLocal) { //if we haven't already changed showGasMoneyLocal
-		display("Would you like to display whether drivers may ask for gas money?", true);
-		display(boolPrompt.str(), false);
-		cin >> show;
-		if (show == 1)
-			showGasMoneyLocal = true;
-		else
-			showGasMoneyLocal = false;
+		showGasMoneyLocal = boolPrompt("Would you like to display whether drivers may ask for gas money?");
 	}
 
 	//min seatbelts
-	if (refine == 1) {
-		int seat;
-		display( "Enter a minimum number of seatbelts (Including the driver)", true);
-		cin >> seat;
-
-		ss << seat;
-		seatbelts = ss.str();
-		ss.str("");
+	if (refine) {
+		string prompt = "Enter a minimum number of seatbelts (Including the driver)";
+		seatbelts = to_string(intPrompt(prompt, 0, INT_MAX));
 	}
 
-	display("Would you like to display number of seatbelts?", true);
-	display(boolPrompt.str(), false);
-	cin >> show;
-
-	if (show == 1)
-		showSeatbelts = true;
-	else
-		showSeatbelts = false;
+	showSeatbelts = boolPrompt("Would you like to display number of seatbelts?");
 
 	//only show can sofa
-	if (refine == 1) {
-		int intSofa;
-		display("Would you like to only show drivers who can move a sofa?", true);
-		display(boolPrompt.str(), false);
-		cin >> intSofa;
-
-		if (intSofa == 1) {
+	if (refine) {
+		bool boolSofa = boolPrompt("Would you like to only show drivers who can move a sofa?");
+		if (boolSofa) {
 			careSofa = true;
 			showSofa = false;
 		}
 	}
 	if (showSofa) {
-		display("Would you like to display sofa-bility?", true);
-		display(boolPrompt.str(), false);
-		cin >> show;
-
-		if (show == 1)
-			showSofa = true;
-		else
-			showSofa = false;
+		showSofa = boolPrompt("Would you like to display sofa-bility?");
 	}
 
 	//cansnow
-	if (refine == 1) {
-		int snow;
-		display("Would you like to only show snow drivers?", true);
-		display(boolPrompt.str(), false);
-		cin >> snow;
-		if (snow == 1)
+	if (refine) {
+		bool snow = boolPrompt("Would you like to only show snow drivers?");
+		if (snow)
 		{
 			careAboutSnow = true;
 			showCanSnow = false;
 		}
 	}
 	if (showCanSnow) {
-		display("Would you like to show whether drivers can drive on snow?", true);
-		display(boolPrompt.str(), false);
-		cin >> show;
-		if (show == 1)
-			showCanSnow = true;
-		else
-			showCanSnow = false;
+		showCanSnow = boolPrompt("Would you like to show whether drivers can drive on snow?");
 	}
 
 	//type
-	vector<string> carTypes = friends->getCarTypes();
+	
 	ss.str("");
-	if (refine == 1) {
-		int chooseType;
-		display("Select car types you would like to view: ", true);
-		for (int i = 0; i < carTypes.size(); i++)
-		{
-			ss << i + 1 << ") " << carTypes[i] << endl;
-			display(ss.str(), false);
-		}
-		ss.str("");
-		ss << carTypes.size() + 1 << ") Any" << endl;
-		display(ss.str(), false);
-		do {
-			cin >> chooseType;
-		} while (chooseType <1 || chooseType > carTypes.size() + 1);
-		if (chooseType < carTypes.size() + 1) //user chose a specific car type
-		{
-			type = carTypes[chooseType - 1];
+	if (refine) {
+		vector<string> carTypes = friends->getCarTypes(), outputs = friends->getCarTypes();
+		carTypes.push_back("Any");
+		outputs.push_back("*");
+		string prompt = "Select car types you would like to view:";
+		type = menuPrompt(prompt, carTypes, outputs);
+		if (type != "*")
 			showType = false;
-		}
-		else type = "*";
 	}
 
 	if (showType) {
-		display("Would you like to display car types?", true);
-		display(boolPrompt.str(), false);
-		cin >> show;
-		if (show == 1)
-			showType = true;
-		else
-			showType = false;
+		showType = boolPrompt("Would you like to display car types?");
 	}
 
 	Query localTrip(showGasMoneyLocal, false, ShowdriverHasAAA, showMilesLimit, false, false, true, showSofa, showCanSnow, false, showReliability, showSeatbelts,
-		false,true,false, 
+		false, true, false,
 		city, timeOfYear, "*", "*", day, "0", reliability, seatbelts, type, careSofa, CareIfDriverHasAAA, miles, gasMoneyLocal, false, careAboutSnow);
 
 	//query ((show{[GasMoneyLocal], false, false, [miles limit], [city?], [area?], [availability], [canSofa], [canSnow],false, false} 
 	//queryType{ false,true, [expand] }
 	//Parameters{ [startCity],[StartTimeoy],end,end,[day],'0',[min seatbelts],[min reliability = 0],[type],[sofa],false,[miles],[local gas],false,[can snow] })
 
-	int expand;
-	display("Would you like to expand your search to the area?", true);
-	display(boolPrompt.str(), false);
-	cin >> expand;
-	if (expand == 1)
+	bool expand = boolPrompt("Would you like to expand your search to the area?");
+	if (expand)
 	{
 		localTrip.expandToArea();
 		localTrip.buildQuery();
 		localTrip.runQuery(friends);
 	}
 
-	int gen;
-	display( "Would You like to see General Availability results?", true);
-	display(boolPrompt.str(), false);
-	cin >> gen;
-	if (gen == 1) {
+	bool gen = boolPrompt("Would You like to see General Availability results?");
+	if (gen) {
 		localTrip.expandToGeneralAvailability();
 		localTrip.buildQuery();
 		localTrip.runQuery(friends);
@@ -859,13 +551,12 @@ void manageFriend() {
 	//insert friend
 	string name;
 	string contact1;
-	int secondContact;
+	bool secondContact;
 	string contact2 = "None";
 	int milesLimit;
-	int AAA;
-	int gasMoneyLocal;
-	int gasMoneyTrip;
-	stringstream boolPrompt;
+	bool AAA;
+	bool gasMoneyLocal;
+	bool gasMoneyTrip;
 
 	display("What is your friend's name? ", true);
 	cin.ignore();
@@ -873,28 +564,18 @@ void manageFriend() {
 
 	display("What is your friend's contact information? (Phone number or email)", true);
 	getline(cin, contact1);
-	display("Does your friend have any secondary contact information?", true);
-	boolPrompt << "1) Yes" << endl << "2) No" << endl;
-	display(boolPrompt.str(), false);
-	cin >> secondContact;
-	cin.ignore();
-	if (secondContact == 1)
+	secondContact = boolPrompt("Does your friend have any secondary contact information?");
+	if (secondContact)
 	{
 		display("What is your friend's secondary contact information?", true);
 		getline(cin, contact2);
 	}
 
-	display("Does your friend have AAA?", true);
-	display(boolPrompt.str(), false);
-	cin >> AAA;
+	AAA = boolPrompt("Does your friend have AAA?");
 
-	display("Does your friend ask for gas money for local trips?", true);
-	display(boolPrompt.str(), false);
-	cin >> gasMoneyLocal;
+	gasMoneyLocal = boolPrompt("Does your friend ask for gas money for local trips?");
 
-	display("Does your friend ask for gas money for longer trips?", true);
-	display(boolPrompt.str(), false);
-	cin >> gasMoneyTrip;
+	gasMoneyTrip = boolPrompt("Does your friend ask for gas money for longer trips?");
 
 	//TODO: add car
 	//TODO: avaliability

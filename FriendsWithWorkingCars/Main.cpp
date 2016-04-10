@@ -18,7 +18,7 @@ int main()
 	SMALL_RECT WinRect = { 0, 0, 150, 30 };
 	SMALL_RECT* WinSize = &WinRect;
 	SetConsoleWindowInfo(GetStdHandle(STD_OUTPUT_HANDLE), true, WinSize);
-	Database * friends = new Database("DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=..\\..\\CS374W_FriendsWithCars.accdb;UID=Admin;PWD=;");
+	Database * friends = new Database("DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=..\\CS374W_FriendsWithCars.accdb;UID=Admin;PWD=;");
 	
 	//friends->insert();
 
@@ -37,6 +37,7 @@ int main()
 		localTrip(friends);
 		break;
 	case 4:
+		friends->insert();
 		break;
 	default:
 		break;

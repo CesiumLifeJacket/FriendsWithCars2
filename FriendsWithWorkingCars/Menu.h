@@ -560,6 +560,10 @@ void manageFriend(Database *friends) {
 	display("What is your friend's name? ", true);
 	cin.ignore();
 	getline(cin, name);
+	if (friends->findPerson(name)) {
+		cout << "They're already here!!!" << endl;
+		return;
+	}
 
 	display("What is your friend's contact information? (Phone number or email)", true);
 	cin.ignore();

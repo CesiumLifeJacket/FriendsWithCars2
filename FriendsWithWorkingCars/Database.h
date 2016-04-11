@@ -11,14 +11,16 @@
 
 #include "Query.h"
 
+const int MAX_RELIABILITY = 10;
 const int MAX_DATA = 100;
 using namespace std;
-string insertPerson(string name, bool AAA, string contact, string contact2, bool gasLocal, bool gasTrip);
 
 class Database {
 public:
 	void query(vector<int> columnWidths, vector<string>columnNames, string q);
 	vector<string> miniQuery(string q);
+	string insertPerson(string name, bool AAA, string contact, string contact2, bool gasLocal, bool gasTrip);
+	bool findPerson(string name);
 
 	vector<string> getCities() {
 		return cities;
@@ -32,7 +34,7 @@ public:
 	}
 	void updateUtilityVectors();
 
-	void insert();
+	void insert(string ins_str);
 
 	Database(string path);
 	~Database();
@@ -242,34 +244,47 @@ void print_err(RETCODE rc, HENV henv, HDBC hdbc, SQLHSTMT hstmt)
 	exit(-1);
 }
 
-void Database::insert() {
-	SQLAllocStmt(hdbc, &hstmt);
-	string ins = insertPerson("Dad", true, "123456", "123654", false, false);
-	SQLINTEGER TextLength = ins.size();
+//put thing in database
+void Database::insert(string ins_str) {
+	rc = SQLAllocStmt(hdbc, &hstmt);
+	const char* ins = ins_str.c_str();
 
-	SQLCHAR * StatementText = (SQLCHAR *)ins.c_str();
+	rc = SQLExecDirectA(hstmt, (SQLCHAR*)ins, SQL_NTS); //execute the query
 
-	rc = SQLPrepareA(hstmt, StatementText, SQL_NTS);
 	if (rc != SQL_SUCCESS) {
-		cout << "PROBLEM " << endl;
-		print_err(rc, NULL, SQL_NULL_HDBC, hstmt);
+		cout << "Panic";
 	}
 
-	rc = SQLExecute(hstmt);
-	if (rc != SQL_SUCCESS) {
-		cout << "PROBLEM " << endl;
-		print_err(rc, NULL, SQL_NULL_HDBC, hstmt);
-	}
-	rc = SQLTransact(henv, hdbc, SQL_COMMIT);
-	if (rc != SQL_SUCCESS)
-		cout << "PROBLEM2 " << endl;
 	SQLFreeStmt(hstmt, SQL_CLOSE);
+}
+
+//Check to see if name is already in database
+bool Database::findPerson(string name) 
+{
+	rc = SQLAllocStmt(hdbc, &hstmt);
+	int sqlHere;
+	bool isHere = false;
+	const char* ins = ("Select Count(*) from Person where FullName = '" + name +"'").c_str();
+
+	rc = SQLExecDirectA(hstmt, (SQLCHAR*)ins, SQL_NTS); //execute the query
+	if (rc != SQL_SUCCESS) {
+		cout << "Panic";
+	}
+	else {
+		rc = SQLFetch(hstmt);
+		if (SQLGetData(hstmt, 1, SQL_INTEGER, &sqlHere, sizeof(int), &cbData) == SQL_SUCCESS)
+		{
+			isHere = (sqlHere > 0);
+		}
+	}
+
+	SQLFreeStmt(hstmt, SQL_CLOSE);
+	return isHere;
 }
 
 
 
-
-string insertPerson(string name, bool AAA, string contact, string contact2, bool gasLocal, bool gasTrip) {
+string Database:: insertPerson(string name, bool AAA, string contact, string contact2, bool gasLocal, bool gasTrip) {
 	//TODO: make it work
 	//Tried: brackets around field names, using YES for true, using 1 for true, using -1 for true (because according to the internet, these are all the 'only' way that access stores yes/no as true.)
 	//the query works in access, but not in the connection
@@ -278,7 +293,7 @@ string insertPerson(string name, bool AAA, string contact, string contact2, bool
 	ss << "FullName, Contact, Contact2, AAA, GasMoneyLocal, GasMoneyTrip) VALUES ('";
 	ss << name << "', ";
 	
-	ss << " \"" << contact << "\", \"" << contact2 << "\"";
+	ss << " '" << contact << "', '" << contact2 << "'";
 	ss << ", ";
 
 	if (AAA)
@@ -296,9 +311,11 @@ string insertPerson(string name, bool AAA, string contact, string contact2, bool
 		ss << "-1";
 	else
 		ss << "0";
-	ss << ");";
-	cout << ss.str();
-	return ss.str();
+	ss << ")";
+	string sql = ss.str();
+	insert(sql);
+	//TODO: error codes if necessary
+	return "";
 }
 
 

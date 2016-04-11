@@ -1,30 +1,31 @@
-﻿Build started 4/7/2016 3:42:29 PM.
-     1>Project "C:\Users\kratcliff15\Source\Repos\FriendsWithCars2\FriendsWithWorkingCars\FriendsWithWorkingCars.vcxproj" on node 2 (Build target(s)).
+﻿Build started 4/11/2016 11:19:16 AM.
+     1>Project "C:\Users\jvonderfecht16\Documents\FriendsWithCars2\FriendsWithWorkingCars\FriendsWithWorkingCars.vcxproj" on node 2 (Rebuild target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt Main.cpp
          Main.cpp
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\database.h(72): warning C4267: 'argument': conversion from 'size_t' to 'SQLSMALLINT', possible loss of data
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\database.h(127): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\database.h(138): warning C4018: '>': signed/unsigned mismatch
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\database.h(144): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\database.h(150): warning C4018: '<=': signed/unsigned mismatch
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\database.h(179): warning C4018: '>': signed/unsigned mismatch
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\menu.h(54): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\menu.h(343): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\menu.h(354): warning C4018: '>': signed/unsigned mismatch
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\menu.h(355): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\menu.h(590): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\menu.h(603): warning C4018: '>': signed/unsigned mismatch
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\menu.h(604): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\menu.h(796): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\menu.h(806): warning C4018: '>': signed/unsigned mismatch
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\menu.h(807): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\kratcliff15\source\repos\friendswithcars2\friendswithworkingcars\menu.h(864): warning C4101: 'milesLimit': unreferenced local variable
+     1>c:\users\jvonderfecht16\documents\friendswithcars2\friendswithworkingcars\database.h(75): warning C4267: 'argument': conversion from 'size_t' to 'SQLSMALLINT', possible loss of data
+     1>c:\users\jvonderfecht16\documents\friendswithcars2\friendswithworkingcars\database.h(130): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\jvonderfecht16\documents\friendswithcars2\friendswithworkingcars\database.h(141): warning C4018: '>': signed/unsigned mismatch
+     1>c:\users\jvonderfecht16\documents\friendswithcars2\friendswithworkingcars\database.h(147): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\jvonderfecht16\documents\friendswithcars2\friendswithworkingcars\database.h(153): warning C4018: '<=': signed/unsigned mismatch
+     1>c:\users\jvonderfecht16\documents\friendswithcars2\friendswithworkingcars\database.h(182): warning C4018: '>': signed/unsigned mismatch
+     1>c:\users\jvonderfecht16\documents\friendswithcars2\friendswithworkingcars\menu.h(28): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\jvonderfecht16\documents\friendswithcars2\friendswithworkingcars\menu.h(306): warning C4101: 'show': unreferenced local variable
+     1>c:\users\jvonderfecht16\documents\friendswithcars2\friendswithworkingcars\menu.h(444): warning C4101: 'show': unreferenced local variable
+     1>c:\users\jvonderfecht16\documents\friendswithcars2\friendswithworkingcars\menu.h(556): warning C4101: 'milesLimit': unreferenced local variable
+     1>c:\users\jvonderfecht16\documents\friendswithcars2\friendswithworkingcars\menu.h(46): warning C4018: '<': signed/unsigned mismatch
+         c:\users\jvonderfecht16\documents\friendswithcars2\friendswithworkingcars\menu.h(69): note: see reference to function template instantiation 'T menuPrompt<bool>(std::string,std::vector<std::string,std::allocator<_Ty>>,std::vector<bool,std::allocator<bool>>)' being compiled
+                 with
+                 [
+                     T=bool,
+                     _Ty=std::string
+                 ]
+     1>c:\users\jvonderfecht16\documents\friendswithcars2\friendswithworkingcars\menu.h(53): warning C4018: '>': signed/unsigned mismatch
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\kratcliff15\Source\Repos\FriendsWithCars2\Debug\FriendsWithWorkingCars.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\kratcliff15\Source\Repos\FriendsWithCars2\Debug\FriendsWithWorkingCars.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\kratcliff15\Source\Repos\FriendsWithCars2\Debug\FriendsWithWorkingCars.lib" /MACHINE:X86 Debug\Main.obj
-         FriendsWithWorkingCars.vcxproj -> C:\Users\kratcliff15\Source\Repos\FriendsWithCars2\Debug\FriendsWithWorkingCars.exe
-     1>Done Building Project "C:\Users\kratcliff15\Source\Repos\FriendsWithCars2\FriendsWithWorkingCars\FriendsWithWorkingCars.vcxproj" (Build target(s)).
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\jvonderfecht16\Documents\FriendsWithCars2\Debug\FriendsWithWorkingCars.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\jvonderfecht16\Documents\FriendsWithCars2\Debug\FriendsWithWorkingCars.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\jvonderfecht16\Documents\FriendsWithCars2\Debug\FriendsWithWorkingCars.lib" /MACHINE:X86 Debug\Main.obj
+         FriendsWithWorkingCars.vcxproj -> C:\Users\jvonderfecht16\Documents\FriendsWithCars2\Debug\FriendsWithWorkingCars.exe
+     1>Done Building Project "C:\Users\jvonderfecht16\Documents\FriendsWithCars2\FriendsWithWorkingCars\FriendsWithWorkingCars.vcxproj" (Rebuild target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:03.06
+Time Elapsed 00:00:01.40

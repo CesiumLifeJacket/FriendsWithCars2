@@ -546,6 +546,7 @@ void localTrip(Database *friends) {
 
 
 }
+
 void manageFriend(Database *friends) {
 	//insert friend
 	string name;
@@ -560,7 +561,7 @@ void manageFriend(Database *friends) {
 	display("What is your friend's name? ", true);
 	cin.ignore();
 	getline(cin, name);
-	if (friends->findPerson(name)) {
+	if (friends->personExists(name)) {
 		cout << "They're already here!!!" << endl;
 		return;
 	}

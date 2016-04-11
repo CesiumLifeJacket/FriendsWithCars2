@@ -20,6 +20,7 @@ public:
 	void query(vector<int> columnWidths, vector<string>columnNames, string q);
 	vector<string> miniQuery(string q);
 	string insertPerson(string name, bool AAA, string contact, string contact2, bool gasLocal, bool gasTrip);
+	bool personExists(string name);
 	bool findPerson(string name);
 
 	vector<string> getCities() {
@@ -245,7 +246,8 @@ void print_err(RETCODE rc, HENV henv, HDBC hdbc, SQLHSTMT hstmt)
 }
 
 //put thing in database
-void Database::insert(string ins_str) {
+void Database::insert(string ins) {
+	/*
 	rc = SQLAllocStmt(hdbc, &hstmt);
 	const char* ins = ins_str.c_str();
 
@@ -256,33 +258,23 @@ void Database::insert(string ins_str) {
 	}
 
 	SQLFreeStmt(hstmt, SQL_CLOSE);
-}
+	*/
 
-//Check to see if name is already in database
-bool Database::findPerson(string name) 
-{
-	rc = SQLAllocStmt(hdbc, &hstmt);
-	int sqlHere;
-	bool isHere = false;
-	const char* ins = ("Select Count(*) from Person where FullName = '" + name +"'").c_str();
+	SQLAllocStmt(hdbc, &hstmt);
 
-	rc = SQLExecDirectA(hstmt, (SQLCHAR*)ins, SQL_NTS); //execute the query
+	rc = SQLExecDirectA(hstmt, (SQLCHAR*)ins.c_str(), SQL_NTS); //execute the query
 	if (rc != SQL_SUCCESS) {
-		cout << "Panic";
-	}
-	else {
-		rc = SQLFetch(hstmt);
-		if (SQLGetData(hstmt, 1, SQL_INTEGER, &sqlHere, sizeof(int), &cbData) == SQL_SUCCESS)
-		{
-			isHere = (sqlHere > 0);
-		}
+		cout << "Error inserting element" << endl;
 	}
 
 	SQLFreeStmt(hstmt, SQL_CLOSE);
-	return isHere;
 }
 
-
+// a second possible implementation of findPerson, using miniQuery
+bool Database::personExists(string name) {
+	vector<string> result = miniQuery("SELECT FullName FROM Person WHERE FullName = '" + name + "'");
+	return result.size() > 0;
+}
 
 string Database:: insertPerson(string name, bool AAA, string contact, string contact2, bool gasLocal, bool gasTrip) {
 	//TODO: make it work

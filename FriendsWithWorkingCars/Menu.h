@@ -91,7 +91,7 @@ int menu() {
 		"Plan road trip",
 		"Plan break trip",
 		"Plan local trip",
-		"insert something??"
+		"Add Friends"
 	};
 	vector<int> outputs = { 1, 2, 3, 4};
 	string prompt = "What would you like to do?";
@@ -546,8 +546,7 @@ void localTrip(Database *friends) {
 
 
 }
-void manageFriend() {
-	//would you like to add/modify/ delete friend/car/avaliability
+void manageFriend(Database *friends) {
 	//insert friend
 	string name;
 	string contact1;
@@ -563,11 +562,13 @@ void manageFriend() {
 	getline(cin, name);
 
 	display("What is your friend's contact information? (Phone number or email)", true);
+	cin.ignore();
 	getline(cin, contact1);
 	secondContact = boolPrompt("Does your friend have any secondary contact information?");
 	if (secondContact)
 	{
 		display("What is your friend's secondary contact information?", true);
+		cin.ignore();
 		getline(cin, contact2);
 	}
 
@@ -576,11 +577,11 @@ void manageFriend() {
 	gasMoneyLocal = boolPrompt("Does your friend ask for gas money for local trips?");
 
 	gasMoneyTrip = boolPrompt("Does your friend ask for gas money for longer trips?");
+	
+	friends->insertPerson(name, AAA, contact1, contact2, gasMoneyLocal, gasMoneyTrip);
 
 	//TODO: add car
 	//TODO: avaliability
-
-
 
 	//TODO: modify friend
 	//TODO: delete friend

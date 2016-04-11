@@ -37,7 +37,7 @@ int main()
 		localTrip(friends);
 		break;
 	case 4:
-		friends->insert();
+		manageFriend(friends);
 		break;
 	default:
 		break;
